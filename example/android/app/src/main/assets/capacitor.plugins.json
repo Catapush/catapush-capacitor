@@ -16,7 +16,7 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
-		"pkg": "catapush-capacitor-sdk",
+		"pkg": "catapush-capacitor",
 		"classpath": "com.catapush.capacitor.sdk.CatapushPlugin"
 	}
 ]

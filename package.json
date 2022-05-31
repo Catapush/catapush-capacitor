@@ -1,6 +1,6 @@
 {
   "name": "catapush-capacitor",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Catapush plugin for Capacitor.<br />See the [SETUP.md](SETUP.md) file for the complete installation guide",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -17,10 +17,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Catapush/catapush-capacitor-sdk.git"
+    "url": "git+https://github.com/Catapush/catapush-capacitor.git"
   },
   "bugs": {
-    "url": "https://github.com/Catapush/catapush-capacitor-sdk/issues"
+    "url": "https://github.com/Catapush/catapush-capacitor/issues"
   },
   "keywords": [
     "catapush",

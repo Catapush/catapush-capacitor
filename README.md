@@ -1,11 +1,11 @@
-# catapush-capacitor-sdk
+# catapush-capacitor
 
 Catapush plugin for Capacitor.<br />See the [SETUP.md](SETUP.md) file for the complete installation guide.
 
 ## Install
 
 ```bash
-npm install catapush-capacitor-sdk
+npm install catapush-capacitor
 npx cap sync
 ```
 

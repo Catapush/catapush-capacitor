@@ -34,7 +34,7 @@
     "@ionic/angular": "^6.1.5",
     "@ionic/storage": "^3.0.6",
     "acorn": "^8.7.1",
-    "catapush-capacitor-sdk": "file:..",
+    "catapush-capacitor": "file:..",
     "ionicons": "^6.0.1",
     "postcss": "^8.4.13",
     "rxjs": "^6.6.7",
