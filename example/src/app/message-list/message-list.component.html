@@ -1,0 +1,38 @@
+<ion-content>
+  <ion-grid class="message-grid">
+    <ion-row *ngFor="let message of messages; trackBy: trackById">
+
+      <ion-col size="9" *ngIf="message.state !== 'SENT' && message.state !== 'SENT_CONFIRMED'" class="message message-received">
+        <ion-img *ngIf="message.hasAttachment" [src]="attachments.get(message.id).url"></ion-img>
+        <span *ngIf="message.body" class="message-body">{{ message.body }}</span>
+        <div class="message-timestamp">{{message.receivedTime | date:'dd.MM.aaaa HH:MM'}}</div>
+      </ion-col>
+
+      <ion-col offset="3" size="9" *ngIf="message.state === 'SENT' || message.state === 'SENT_CONFIRMED'" class="message message-sent">
+        <ion-img *ngIf="message.hasAttachment" [src]="attachments.get(message.id).url"></ion-img>
+        <span *ngIf="message.body" class="message-body">{{ message.body }}</span>
+        <div class="message-timestamp">{{message.sentTime | date:'dd.MM.aaaa HH:MM'}}</div>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer align-self-end>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-item color="dark" class="message-input">
+        <ion-label position="stacked">Send a message:</ion-label>
+        <ion-input inputmode="text" autocapitalize="sentences" enterkeyhint="send" autofocus="true" [(ngModel)]="newMessageBody"></ion-input>
+      </ion-item>
+    </ion-title>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="sendAttachment()">
+        <ion-icon slot="icon-only" name="attach"></ion-icon>
+      </ion-button>
+      <ion-button [disabled]="newMessageBody === ''" (click)="sendMessage()">
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

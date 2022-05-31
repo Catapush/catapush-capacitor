@@ -1,0 +1,34 @@
+.message-grid {
+}
+
+%message-shared {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 12px !important;
+
+  .message-body {
+    color: var(--ion-color-dark-contrast); 
+  }
+
+  .message-timestamp {
+    text-align: end;
+    color: var(--ion-color-dark-contrast);
+    font-size: 0.8rem;
+  }
+}
+
+.message-received {
+  @extend %message-shared;
+  background-color: var(--ion-color-primary-shade);
+  border-top-left-radius: 0px !important;
+}
+
+.message-sent {
+  @extend %message-shared;
+  background-color: var(--ion-color-medium-shade);
+  border-top-right-radius: 0px !important;
+}
+
+.message-input {
+  --ion-color-base: transparent !important;
+}
