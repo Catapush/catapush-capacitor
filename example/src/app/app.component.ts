@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Platform } from '@ionic/angular';
-import { CatapushPlugin } from "catapush-capacitor-sdk"
+import { CatapushPlugin } from "catapush-capacitor"
 
 
 @Component({

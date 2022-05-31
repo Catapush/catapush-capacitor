@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ChangeDetectorRef, Component, HostListener } from '@angular/core'
 import { FileChooser } from '@ionic-native/file-chooser'
-import type { CatapushError, CatapushFile, CatapushMessage, CatapushState, AllMessagesResponse } from "catapush-capacitor-sdk";
-import { CatapushPlugin } from "catapush-capacitor-sdk"
+import type { CatapushError, CatapushFile, CatapushMessage, CatapushState, AllMessagesResponse } from "catapush-capacitor";
+import { CatapushPlugin } from "catapush-capacitor"
 
 
 @Component({

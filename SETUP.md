@@ -11,7 +11,7 @@ In order to start sending push notifications and interacting with your mobile ap
 ### Add Catapush Capacitor plugin dependency
 In the directory of your Ionic Capacitor app project run:
 ```bash
-npm install catapush-capacitor-sdk
+npm install catapush-capacitor
 npx cap sync
 ```
 

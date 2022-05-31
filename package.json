@@ -17,10 +17,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Catapush/catapush-capacitor-sdk.git"
+    "url": "git+https://github.com/Catapush/catapush-capacitor.git"
   },
   "bugs": {
-    "url": "https://github.com/Catapush/catapush-capacitor-sdk/issues"
+    "url": "https://github.com/Catapush/catapush-capacitor/issues"
   },
   "keywords": [
     "catapush",
