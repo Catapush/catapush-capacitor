@@ -13,7 +13,7 @@
     android:theme="@style/AppTheme"
     android:name=".App">
 
-    <meta-data android:name="com.catapush.library.APP_KEY" android:value="36cdb9327557fd5651224e2dba551f6e" />
+    <meta-data android:name="com.catapush.library.APP_KEY" android:value="SET_YOUR_CATAPUSH_APP_KEY" />
 
     <activity
       android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"

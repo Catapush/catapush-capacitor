@@ -344,7 +344,7 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
         obj.put("optionalData", this.data()?.run {
             val data = JSObject()
             forEach { (key, value) -> data.put(key, value) }
-            return data
+            return@run data
         })
         obj.put("replyToId", this.originalMessageId())
         obj.put("state", this.state())
