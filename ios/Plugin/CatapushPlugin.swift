@@ -24,12 +24,38 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
             return
         }
         UserDefaults.init(suiteName: (Bundle.main.object(forInfoDictionaryKey: "Catapush") as! (Dictionary<String,String>))["AppGroup"])?.setValue("capacitor", forKey: "KCatapushLibraryPlugin");
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         Catapush.setAppKey(appKey)
         catapushDelegate = CatapushDelegateClass(channel: self)
         messagesDispatcherDelegate = MessagesDispatchDelegateClass(channel: self)
         Catapush.setupCatapushStateDelegate(catapushDelegate, andMessagesDispatcherDelegate: messagesDispatcherDelegate)
         DispatchQueue.main.async {
-            Catapush.registerUserNotification(UIApplication.shared.delegate as? UIResponder)
+            Catapush.registerUserNotification(UIApplication.shared.delegate as! UIResponder)
+        }
+        UNUserNotificationCenter.current().delegate = self
+    }
+    
+    @objc public func applicationDidBecomeActive(_ application: UIApplication) {
+        Catapush.applicationDidBecomeActive(application)
+    }
+    
+    @objc public func applicationWillTerminate(_ application: UIApplication) {
+        Catapush.applicationWillTerminate(application)
+    }
+    
+    @objc public func applicationDidEnterBackground(_ application: UIApplication) {
+        Catapush.applicationDidEnterBackground(application)
+    }
+    
+    @objc public func applicationWillEnterForeground(_ application: UIApplication) {
+        var error: NSError?
+        Catapush.applicationWillEnterForeground(application, withError: &error)
+        if let error = error {
+            // Handle error...
+            print("Error: \(error.localizedDescription)")
         }
     }
     
@@ -133,7 +159,7 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
                 if let replyTo = replyTo {
                     message = Catapush.sendMessage(withText: text, replyTo: replyTo)
                 }else{
-                    message = Catapush.sendMessage(withText: text)!
+                    message = Catapush.sendMessage(withText: text)
                 }
             }
         }
@@ -166,7 +192,8 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
         }
         
         let predicate = NSPredicate(format: "messageId = %@", id)
-        if let matches = Catapush.messages(with: predicate), matches.count > 0 {
+        let matches = Catapush.messages(with: predicate)
+        if matches.count > 0 {
             let messageIP = matches.first! as! MessageIP
             if messageIP.hasMedia() {
                 if messageIP.mm != nil {
@@ -176,13 +203,13 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
                               return
                           }
                     let tempDirectoryURL = NSURL.fileURL(withPath: NSTemporaryDirectory(), isDirectory: true)
-                    let filePath = tempDirectoryURL.appendingPathComponent("\(messageIP.messageId!).\(ext.takeRetainedValue())")
+                    let filePath = tempDirectoryURL.appendingPathComponent("\(messageIP.messageId).\(ext.takeRetainedValue())")
                     let fileManager = FileManager.default
                     if fileManager.fileExists(atPath: filePath.path) {
                         call.resolve(["url": filePath.path, "mimeType": messageIP.mmType ?? ""])
                     }
                     do {
-                        try messageIP.mm.write(to: filePath)
+                        try messageIP.mm!.write(to: filePath)
                         call.resolve(["url": filePath.path, "mimeType": messageIP.mmType ?? ""])
                     } catch {
                         call.reject(error.localizedDescription)
@@ -193,7 +220,8 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
                             call.reject(error!.localizedDescription)
                         }else{
                             let predicate = NSPredicate(format: "messageId = %@", id)
-                            if let matches = Catapush.messages(with: predicate), matches.count > 0 {
+                            let matches = Catapush.messages(with: predicate)
+                            if matches.count > 0 {
                                 let messageIP = matches.first! as! MessageIP
                                 if messageIP.hasMedia() {
                                     if messageIP.mm != nil {
@@ -203,13 +231,13 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
                                                   return
                                               }
                                         let tempDirectoryURL = NSURL.fileURL(withPath: NSTemporaryDirectory(), isDirectory: true)
-                                        let filePath = tempDirectoryURL.appendingPathComponent("\(messageIP.messageId!).\(ext.takeRetainedValue())")
+                                        let filePath = tempDirectoryURL.appendingPathComponent("\(messageIP.messageId).\(ext.takeRetainedValue())")
                                         let fileManager = FileManager.default
                                         if fileManager.fileExists(atPath: filePath.path) {
                                             call.resolve(["url": filePath.path])
                                         }
                                         do {
-                                            try messageIP.mm.write(to: filePath)
+                                            try messageIP.mm!.write(to: filePath)
                                             call.resolve(["url": filePath.path, "mimeType": messageIP.mmType ?? ""])
                                         } catch {
                                             call.reject(error.localizedDescription)
@@ -249,7 +277,7 @@ public class CatapushPlugin: CAPPlugin, MessageDispatchSendResult, MessageDispat
         let LONG_DELAY =  300
         let SHORT_DELAY = 30
         
-        func catapushDidConnectSuccessfully(_ catapush: Catapush!) {
+        func catapushDidConnectSuccessfully(_ catapush: Catapush) {
             
         }
         
@@ -575,4 +603,31 @@ protocol MessageDispatchReceivedResult {
 
 protocol StateDispatchSendResult {
     func stateDispatchSendResult(result: PluginCallResultData)
+}
+
+extension CatapushPlugin: UNUserNotificationCenterDelegate {
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let ud = UserDefaults.init(suiteName: (Bundle.main.object(forInfoDictionaryKey: "Catapush") as! (Dictionary<String,String>))["AppGroup"])
+        let pendingMessages : Dictionary<String, String>? = ud!.object(forKey: "pendingMessages") as? Dictionary<String, String>;
+        if (pendingMessages != nil && pendingMessages![response.notification.request.identifier] != nil) {
+            let id: String = String(pendingMessages![response.notification.request.identifier]!.split(separator: "_").first ?? "")
+            let predicate = NSPredicate(format: "messageId == %@", id)
+            let matches = Catapush.messages(with: predicate)
+            if matches.count > 0, let messageIP = matches.first as? MessageIP {
+                let result = [
+                    "message": CatapushPlugin.formatMessageID(message: messageIP)
+                ] as [String : Any]
+                notifyListeners("Catapush#catapushNotificationTapped", data: result)
+                var newPendingMessages: Dictionary<String, String>?
+                if (pendingMessages == nil) {
+                    newPendingMessages = Dictionary()
+                }else{
+                    newPendingMessages = pendingMessages!
+                }
+                newPendingMessages![response.notification.request.identifier] = nil;
+                ud!.setValue(newPendingMessages, forKey: "pendingMessages")
+            }
+        }
+        completionHandler();
+    }
 }
