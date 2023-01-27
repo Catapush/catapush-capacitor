@@ -41,6 +41,12 @@ class CatapushPluginImpl implements ICatapushPlugin {
           this.messageDelegate?.catapushMessageSent(info.message)
         },
       ).then(handler => this.messageHandlers.push(handler))
+      await this.catapushBasePlugin.addListener(
+        'Catapush#catapushNotificationTapped',
+        (info: any) => {
+          this.messageDelegate?.catapushNotificationTapped(info.message)
+        },
+      ).then(handler => this.messageHandlers.push(handler))
     }
   }
 

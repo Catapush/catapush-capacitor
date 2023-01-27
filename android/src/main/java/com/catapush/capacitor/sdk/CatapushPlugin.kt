@@ -1,6 +1,7 @@
 package com.catapush.capacitor.sdk
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -29,6 +30,8 @@ import java.lang.reflect.Modifier
 @CapacitorPlugin(name = "CatapushPlugin")
 class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDelegate {
 
+    private var inited = false
+
     init {
         try {
             val pluginType = Catapush::class.java.getDeclaredField("pluginType")
@@ -37,9 +40,27 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
         } catch (e: Exception) {
             Log.e("CatapushPlugin", "Can't initialize plugin instance", e)
         }
+
+        instanceRef = WeakReference(this)
     }
 
     companion object {
+        private val tappedMessagesQueue = ArrayList<CatapushMessage>()
+        private var instanceRef: WeakReference<CatapushPlugin>? = null
+            set(value) {
+                field = value
+                value?.get()?.tryDispatchQueuedEvents()
+            }
+
+        fun handleNotificationTapped(message: CatapushMessage) {
+            val instance = instanceRef?.get()
+            if (instance?.isChannelReady() == true) {
+                instance.dispatchNotificationTapped(message)
+            } else {
+                tappedMessagesQueue.add(message)
+            }
+        }
+
         private lateinit var companionContext: WeakReference<Context>
         private var messageDispatchDelegate: IMessagesDispatchDelegate? = null
         private var statusDispatchDelegate: IStatusDispatchDelegate? = null
@@ -68,6 +89,10 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
 
             override fun onMessageReceived(message: CatapushMessage) {
                 messageDispatchDelegate?.dispatchMessageReceived(message)
+            }
+
+            override fun onMessageReceivedConfirmed(message: CatapushMessage) {
+                // TODO
             }
 
             override fun onRegistrationFailed(error: CatapushAuthenticationError) {
@@ -113,6 +138,12 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
         notifyListeners("Catapush#catapushMessageSent", params)
     }
 
+    override fun dispatchNotificationTapped(message: CatapushMessage) {
+        val params = JSObject()
+        params.put("message",  message.toJsonObject())
+        notifyListeners("Catapush#catapushNotificationTapped", params)
+    }
+
     override fun dispatchConnectionStatus(status: String) {
         val params = JSObject()
         params.put("status", status)
@@ -133,7 +164,9 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
         statusDispatchDelegate = this
         companionContext = WeakReference(context)
 
-        if ((Catapush.getInstance() as Catapush).isInitialized.blockingFirst(false)) {
+        inited = (Catapush.getInstance() as Catapush).waitInitialization()
+        if (inited) {
+            tryDispatchQueuedEvents()
             call.resolve()
         } else {
             call.reject("Please invoke Catapush.getInstance().init(...) in the Application.onCreate(...) callback of your Android native app")
@@ -325,6 +358,17 @@ class CatapushPlugin : Plugin(), IMessagesDispatchDelegate, IStatusDispatchDeleg
         val id = call.getString("id")
         Catapush.getInstance().notifyMessageOpened(id)
         call.resolve()
+    }
+
+    private fun isChannelReady() : Boolean {
+        return inited && instanceRef?.get() != null
+    }
+
+    private fun tryDispatchQueuedEvents() {
+        if (isChannelReady() && tappedMessagesQueue.isNotEmpty()) {
+            tappedMessagesQueue.forEach { dispatchNotificationTapped(it) }
+            tappedMessagesQueue.clear()
+        }
     }
 
     private fun List<CatapushMessage>.toJsonArray() : JSObject {

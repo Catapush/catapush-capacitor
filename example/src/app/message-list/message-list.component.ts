@@ -25,7 +25,8 @@ export class MessageListComponent {
 
     CatapushPlugin.setCatapushMessageDelegate({
       catapushMessageReceived: (_message: CatapushMessage) => this.loadMessages(),
-      catapushMessageSent: (_message: CatapushMessage) => this.loadMessages()
+      catapushMessageSent: (_message: CatapushMessage) => this.loadMessages(),
+      catapushNotificationTapped: (message: CatapushMessage) => console.log('Catapush notification tapped for message: ' + message.id)
     })
 
     CatapushPlugin.setCatapushStateDelegate({

@@ -6,7 +6,7 @@ ext {
 }
 
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.kotlin_version = '1.7.21'
     repositories {
         google()
         mavenCentral()
@@ -56,6 +56,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
 
-    api "com.catapush.catapush-android-sdk:core:12.0.7"
-    api "com.catapush.catapush-android-sdk:gms:12.0.7"
+    api "com.catapush.catapush-android-sdk:core:12.1.1"
+    api "com.catapush.catapush-android-sdk:gms:12.1.1"
 }

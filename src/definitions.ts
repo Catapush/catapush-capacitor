@@ -217,6 +217,7 @@ export const enum CatapushState {
 export interface CatapushMessageDelegate {
   catapushMessageReceived(message: CatapushMessage): void
   catapushMessageSent(message: CatapushMessage): void
+  catapushNotificationTapped(message: CatapushMessage): void
 }
 
 export interface CatapushStateDelegate {
