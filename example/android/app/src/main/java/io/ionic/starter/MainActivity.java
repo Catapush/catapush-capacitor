@@ -11,13 +11,13 @@ public class MainActivity extends BridgeActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    CatapushPluginIntentProvider.handleIntent(getIntent());
+    CatapushPluginIntentProvider.Companion.handleIntent(getIntent());
   }
 
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    CatapushPluginIntentProvider.handleIntent(intent);
+    CatapushPluginIntentProvider.Companion.handleIntent(intent);
   }
 
 }
