@@ -56,6 +56,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
 
-    api "com.catapush.catapush-android-sdk:core:12.1.1"
-    api "com.catapush.catapush-android-sdk:gms:12.1.1"
+    api "com.catapush.catapush-android-sdk:core:12.1.1-sdk31"
+    api "com.catapush.catapush-android-sdk:gms:12.1.1-sdk31"
 }
