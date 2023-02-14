@@ -238,10 +238,11 @@ Send the read notification of a message to the Catapush server.
 
 #### CatapushMessageDelegate
 
-| Method                      | Signature                                                            |
-| --------------------------- | -------------------------------------------------------------------- |
-| **catapushMessageReceived** | (message: <a href="#catapushmessage">CatapushMessage</a>) =&gt; void |
-| **catapushMessageSent**     | (message: <a href="#catapushmessage">CatapushMessage</a>) =&gt; void |
+| Method                         | Signature                                                            |
+| ------------------------------ | -------------------------------------------------------------------- |
+| **catapushMessageReceived**    | (message: <a href="#catapushmessage">CatapushMessage</a>) =&gt; void |
+| **catapushMessageSent**        | (message: <a href="#catapushmessage">CatapushMessage</a>) =&gt; void |
+| **catapushNotificationTapped** | (message: <a href="#catapushmessage">CatapushMessage</a>) =&gt; void |
 
 
 #### CatapushMessage

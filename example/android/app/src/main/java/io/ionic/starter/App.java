@@ -3,32 +3,35 @@ package io.ionic.starter;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.catapush.capacitor.sdk.CatapushPlugin;
+import com.catapush.capacitor.sdk.CatapushPluginIntentProvider;
 import com.catapush.library.Catapush;
 import com.catapush.library.gms.CatapushGms;
 import com.catapush.library.interfaces.Callback;
+import com.catapush.library.interfaces.ICatapushInitializer;
 import com.catapush.library.notifications.NotificationTemplate;
 
 import java.util.Collections;
 
-public class App extends Application {
+public class App extends Application implements ICatapushInitializer {
 
   @Override
   public void onCreate() {
     super.onCreate();
+    initCatapush();
+  }
 
+  @Override
+  public void initCatapush() {
     NotificationTemplate notificationTemplate = new NotificationTemplate.Builder("CATAPUSH_MESSAGES")
       .swipeToDismissEnabled(true)
       .vibrationEnabled(true)
@@ -67,21 +70,12 @@ public class App extends Application {
     }
 
     Catapush.getInstance()
-      .setNotificationIntent((catapushMessage, context) -> {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setData(Uri.parse("catapush://messages/" + catapushMessage.id()));
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("message", catapushMessage);
-        int requestCode = catapushMessage.id().hashCode();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-        } else {
-          return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-        }
-      })
-      .init(this,
+      .init(
+        this,
+        this,
         CatapushPlugin.Companion.getEventDelegate(),
         Collections.singletonList(CatapushGms.INSTANCE),
+        new CatapushPluginIntentProvider(MainActivity.class),
         notificationTemplate,
         null,
         new Callback<Boolean>() {

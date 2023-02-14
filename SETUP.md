@@ -158,19 +158,23 @@ _YOUR_APP_KEY_ is the _AppKey_ of your Catapush App (go to your [Catapush App co
 
 ### [Android] Application class customization
 
-You must initialize Catapush in your class that extends `Application`.
+You must initialize Catapush in your class that extends `Application`, implementing the `ICatapushInitializer` interface.
 
 You also have to provide your customized notification style template here.
 
 Your `Application.onCreate()` method should contain the following lines:
 
 ```java
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends MultiDexApplication implements ICatapushInitializer {
 
   @Override
   public void onCreate() {
     super.onCreate();
+        initCatapush();
+    }
 
+  @Override
+  public void initCatapush() {
     // This is the notification template that the Catapush SDK uses to build
     // the status bar notification shown to the user.
     // Customize this template to fit your needs.
@@ -217,28 +221,12 @@ public class MyApplication extends MultiDexApplication {
     }
 
     Catapush.getInstance()
-      .setNotificationIntent((catapushMessage, context) -> {
-        // This is the Activity you want to open when a notification is tapped:
-        Intent intent = new Intent(context, MainActivity.class);
-        // This is a unique URI set to the Intent to avoid its recycling for different
-        // Notifications when it's set as PendingIntent in the NotificationManager.
-        // There's no need to provide a valid scheme or path, it just need to be unique.
-        intent.setData(Uri.parse("catapush://messages/" + catapushMessage.id()));
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("message", catapushMessage);
-        // This PendingIntent will be set as "ContentIntent" in the local notification
-        // shown to the user in the Android notifications UI and launched on tap
-        int requestCode = catapushMessage.id().hashCode();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-        } else {
-          return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-        }
-      })
       .init(
+        this,
         this,
         CatapushPlugin.Companion.getEventDelegate(), // Required, the Capacitor plugin won't work if you don't set this depegate instance
         Collections.singletonList(CatapushGms.INSTANCE),
+        new CatapushPluginIntentProvider(MainActivity.class),
         notificationTemplate,
         null,
         new Callback<Boolean>() {
@@ -268,6 +256,30 @@ If you are defining a custom application class for your app for the first time, 
 ```
 
 Please note that, to be used, the `MultiDexApplication` requires your app to depend on the `androidx.multidex:multidex` dependency.
+
+### [Android] MainActivity class customization
+
+Your `MainActivity` implementation must forward the received `Intent`s to make the `catapushNotificationTapped` callback work:
+
+```java
+public class MainActivity extends FlutterActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        CatapushPluginIntentProvider.Companion.handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        CatapushPluginIntentProvider.Companion.handleIntent(intent);
+    }
+
+}
+```
+
+The `Intent` instances will be handled only if generated from a Catapush notification.
 
 ### [Android] Configure a push services provider
 
