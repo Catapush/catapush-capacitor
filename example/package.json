@@ -35,11 +35,10 @@
     "acorn": "^8.7.1",
     "catapush-capacitor": "file:..",
     "ionicons": "^6.0.1",
-    "postcss": "^8.4.13",
-    "rxjs": "^6.6.7",
-    "sw-toolbox": "3.6.0",
-    "webpack": "^5.72.1",
-    "zone.js": "^0.11.5"
+    "postcss": "^8.4.24",
+    "rxjs": "^7.8.1",
+    "webpack": "^5.88.0",
+    "zone.js": "^0.11.8"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.11",
