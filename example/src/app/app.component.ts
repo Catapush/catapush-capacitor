@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Platform } from '@ionic/angular';
 import { CatapushPlugin } from "catapush-capacitor"
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 
 
 @Component({
@@ -13,9 +14,21 @@ import { CatapushPlugin } from "catapush-capacitor"
 })
 export class AppComponent {
 
-  constructor(public router: Router, public platform: Platform) {
+  constructor(
+    public router: Router,
+    public platform: Platform,
+    private androidPermissions: AndroidPermissions) {
     this.platform.ready().then(async (readySource) => {
       console.log('Platform ready from', readySource);
+
+      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.POST_NOTIFICATIONS).then(
+        result => {
+          console.log('Has post notifications permission?', result.hasPermission)
+          if (!result.hasPermission)
+            this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.POST_NOTIFICATIONS);
+        },
+        err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.POST_NOTIFICATIONS)
+      );
 
       // Init native SDK
       await CatapushPlugin.enableLog({ enabled: true })
