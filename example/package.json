@@ -36,7 +36,7 @@
     "catapush-capacitor": "file:..",
     "ionicons": "^6.0.1",
     "postcss": "^8.4.24",
-    "rxjs": "^7.8.1",
+    "rxjs": "^6.5.0",
     "webpack": "^5.88.0",
     "zone.js": "^0.11.8"
   },
@@ -44,9 +44,8 @@
     "@angular-devkit/build-angular": "^14.2.11",
     "@angular/cli": "^14.2.11",
     "@capacitor/cli": "^5.0.0",
-    "@ionic/app-scripts": "3.2.4",
     "@types/jest": "^27.5.1",
-    "typescript": "^4.9.5"
+    "typescript": "^4.8.0"
   },
   "description": "An Ionic project"
 }
