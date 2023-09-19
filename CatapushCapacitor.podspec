@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source = { :git => package['repository']['url'], :tag => s.version.to_s }
   s.source_files = 'ios/Plugin/**/*.{swift,h,m,c,cc,mm,cpp}'
   s.ios.deployment_target  = '12.0'
-  s.dependency 'catapush-ios-sdk-pod', '2.2.2'
+  s.dependency 'catapush-ios-sdk-pod', '2.2.3'
   s.dependency 'Capacitor'
   s.swift_version = '5.1'
 end
