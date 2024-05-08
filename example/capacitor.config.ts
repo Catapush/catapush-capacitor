@@ -4,7 +4,10 @@ const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
   appName: 'example',
   webDir: 'www',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  server: {
+    androidScheme: "http"
+  }
 };
 
 export default config;
