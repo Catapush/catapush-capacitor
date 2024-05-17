@@ -3,6 +3,9 @@
 	"appName": "example",
 	"webDir": "www",
 	"bundledWebRuntime": false,
+	"server": {
+		"androidScheme": "http"
+	},
 	"packageClassList": [
 		"AppPlugin",
 		"HapticsPlugin",

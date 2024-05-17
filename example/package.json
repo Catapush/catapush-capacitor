@@ -36,6 +36,7 @@
     "acorn": "^8.7.1",
     "catapush-capacitor": "file:..",
     "cordova-plugin-android-permissions": "^1.1.5",
+    "cordova-plugin-filechooser": "^1.2.0",
     "ionicons": "^6.0.1",
     "postcss": "^8.4.24",
     "rxjs": "^6.5.0",
