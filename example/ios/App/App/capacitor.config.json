@@ -2,5 +2,17 @@
 	"appId": "io.ionic.starter",
 	"appName": "example",
 	"webDir": "www",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"server": {
+		"androidScheme": "http"
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin",
+		"CatapushPlugin",
+		"CatapushPlugin",
+		"CDVPlugin"
+	]
 }
