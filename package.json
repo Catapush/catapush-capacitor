@@ -1,6 +1,6 @@
 {
   "name": "catapush-capacitor",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Catapush plugin for Capacitor.<br />See the [SETUP.md](SETUP.md) file for the complete installation guide",
   "type": "module",
   "main": "dist/plugin.cjs.js",
