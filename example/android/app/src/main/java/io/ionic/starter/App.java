@@ -41,7 +41,6 @@ public class App extends Application implements ICatapushInitializer {
       .circleColor(Color.BLUE)
       .iconId(R.drawable.ic_stat_notify_default)
       .useAttachmentPreviewAsLargeIcon(true)
-      .modalIconId(R.mipmap.ic_launcher)
       .ledEnabled(true)
       .ledColor(Color.BLUE)
       .ledOnMS(2000)
