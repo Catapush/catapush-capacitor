@@ -15,7 +15,7 @@
     <meta-data android:name="com.catapush.library.APP_KEY" android:value="SET_YOUR_CATAPUSH_APP_KEY" />
 
     <activity
-      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation"
       android:name="io.ionic.starter.MainActivity"
       android:label="@string/title_activity_main"
       android:theme="@style/AppTheme.NoActionBarLaunch"
